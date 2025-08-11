@@ -175,7 +175,7 @@ public final class SolidRoundedButtonNode: ASDisplayNode {
     private var borderMaskView: UIView?
     private var borderShimmerView: ShimmerEffectForegroundView?
         
-    private var thirdButton: UIButton
+    private var thirdButton: UIButton?
     private let buttonNode: HighlightTrackingButtonNode
     public let titleNode: ImmediateTextNode
     private let subtitleNode: ImmediateTextNode
@@ -194,12 +194,12 @@ public final class SolidRoundedButtonNode: ASDisplayNode {
         didSet {
             if showThirdAction {
                 self.thirdButton = UIButton(type: .custom)
-                self.thirdButton.backgroundColor = self.theme.backgroundColor
-                self.thirdButton.setTitle("Third Login", for: .normal)
-                self.thirdButton.titleLabel?.font = self.font == .bold ? Font.semibold(self.fontSize) : Font.regular(self.fontSize)
-                self.thirdButton.layer.cornerRadius = 10
-                self.thirdButton.addTarget(self, action: #selector(self.buttonThirdPressed), for: .touchUpInside)
-                self.view.addSubview(self.thirdButton)
+                self.thirdButton?.backgroundColor = self.theme.backgroundColor
+                self.thirdButton?.setTitle("Third Login", for: .normal)
+                self.thirdButton?.titleLabel?.font = self.font == .bold ? Font.semibold(self.fontSize) : Font.regular(self.fontSize)
+                self.thirdButton?.layer.cornerRadius = 10
+                self.thirdButton?.addTarget(self, action: #selector(self.buttonThirdPressed), for: .touchUpInside)
+                self.view.addSubview(self.thirdButton!)
             }
         }
     }
@@ -726,7 +726,7 @@ public final class SolidRoundedButtonNode: ASDisplayNode {
             self.setupGradientAnimations()
         }
         
-        self.thirdButton.frame = CGRect(origin: CGPoint(), size: buttonSize)
+        self.thirdButton?.frame = CGRect(origin: CGPoint(), size: buttonSize)
         transition.updateFrame(node: self.buttonNode, frame: buttonFrame)
         
         if self.title != self.titleNode.attributedText?.string {
