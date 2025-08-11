@@ -21,7 +21,7 @@ public final class TelegramApplicationOpenUrlCompletion {
     
     public init(completion: @escaping (Bool) -> Void) {
         self.completion = completion
-    }  
+    }
 }
 
 public enum AccessType {
