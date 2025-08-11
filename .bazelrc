@@ -22,3 +22,6 @@ build --spawn_strategy=standalone
 build --strategy=SwiftCompile=standalone
 build --define RULES_SWIFT_BUILD_DUMMY_WORKER=1
 
+# 添加以下两行，用于忽略可变长度数组的警告
+build --copt="-Wno-vla-cxx-extension"
+build --cxxopt="-Wno-vla-cxx-extension"
