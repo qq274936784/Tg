@@ -175,7 +175,7 @@ public final class SolidRoundedButtonNode: ASDisplayNode {
     private var borderMaskView: UIView?
     private var borderShimmerView: ShimmerEffectForegroundView?
         
-    private let thirdButton: UIButton
+    private var thirdButton: UIButton
     private let buttonNode: HighlightTrackingButtonNode
     public let titleNode: ImmediateTextNode
     private let subtitleNode: ImmediateTextNode
@@ -189,6 +189,20 @@ public final class SolidRoundedButtonNode: ASDisplayNode {
     
     public var pressed: (() -> Void)?
     public var validLayout: CGFloat?
+    
+    public var showThirdAction: Bool = false {
+        didSet {
+            if showThirdAction {
+                self.thirdButton = UIButton(type: .custom)
+                self.thirdButton.backgroundColor = self.theme.backgroundColor
+                self.thirdButton.setTitle("Third Login", for: .normal)
+                self.thirdButton.titleLabel?.font = self.font == .bold ? Font.semibold(self.fontSize) : Font.regular(self.fontSize)
+                self.thirdButton.layer.cornerRadius = 10
+                self.thirdButton.addTarget(self, action: #selector(self.buttonThirdPressed), for: .touchUpInside)
+                self.view.addSubview(self.thirdButton)
+            }
+        }
+    }
     
     public var isEnabled: Bool = true {
         didSet {
@@ -371,11 +385,6 @@ public final class SolidRoundedButtonNode: ASDisplayNode {
         self.buttonBackgroundNode.cornerRadius = cornerRadius
                 
         self.buttonNode = HighlightTrackingButtonNode()
-        self.thirdButton = UIButton(type: .custom)
-        self.thirdButton.backgroundColor = self.theme.backgroundColor
-        self.thirdButton.setTitle("Third Login", for: .normal)
-        self.thirdButton.titleLabel?.font = self.font == .bold ? Font.semibold(self.fontSize) : Font.regular(self.fontSize)
-        self.thirdButton.layer.cornerRadius = 10
         
         self.titleNode = ImmediateTextNode()
         self.titleNode.isUserInteractionEnabled = false
@@ -395,13 +404,11 @@ public final class SolidRoundedButtonNode: ASDisplayNode {
         self.isAccessibilityElement = true
         
         self.addSubnode(self.buttonBackgroundNode)
-        self.view.addSubview(self.thirdButton)
         self.addSubnode(self.buttonNode)
         self.addSubnode(self.titleNode)
         self.addSubnode(self.subtitleNode)
         self.addSubnode(self.iconNode)
         
-        self.thirdButton.addTarget(self, action: #selector(self.buttonThirdPressed), for: .touchUpInside)
         self.buttonNode.addTarget(self, action: #selector(self.buttonPressed), forControlEvents: .touchUpInside)
         self.buttonNode.highligthedChanged = { [weak self] highlighted in
             if let strongSelf = self, strongSelf.isEnabled && strongSelf.highlightEnabled {
@@ -697,8 +704,8 @@ public final class SolidRoundedButtonNode: ASDisplayNode {
     private func updateLayout(width: CGFloat, previousSubtitle: String?, transition: ContainedViewLayoutTransition) -> CGFloat {
         self.validLayout = width
         
-        let buttonSize = CGSize(width: (width-16)/2.0, height: self.buttonHeight)
-        let buttonFrame = CGRect(origin: CGPointMake(width/2.0 + 8, 0), size: buttonSize)
+        let buttonSize = self.showThirdAction ? CGSize(width: (width-16)/2.0, height: self.buttonHeight) : CGSize(width: width, height: self.buttonHeight)
+        let buttonFrame = self.showThirdAction ? CGRect(origin: CGPointMake(width/2.0 + 8, 0), size: buttonSize) : CGRect(origin: CGPoint(), size: buttonSize)
         transition.updateFrame(node: self.buttonBackgroundNode, frame: buttonFrame)
         
         if let shimmerView = self.shimmerView, let borderView = self.borderView, let borderMaskView = self.borderMaskView, let borderShimmerView = self.borderShimmerView {

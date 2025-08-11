@@ -277,16 +277,17 @@ public final class AuthorizationSequencePhoneEntryController: ViewController, MF
                 self.present(standardTextAlertController(theme: AlertControllerTheme(presentationData: self.presentationData), title: nil, text: self.presentationData.strings.Login_PhoneNumberAlreadyAuthorized, actions: actions), in: .window(.root))
             } else {
                 if let validLayout = self.validLayout, validLayout.size.width > 320.0 {
-                    let (code, formattedNumber) = self.controllerNode.formattedCodeAndNumber
-
-                    let confirmationController = PhoneConfirmationController(theme: self.presentationData.theme, strings: self.presentationData.strings, code: code, number: formattedNumber, sourceController: self)
-                    confirmationController.proceed = { [weak self] in
-                        if let strongSelf = self {
-                            strongSelf.loginWithNumber?(strongSelf.controllerNode.currentNumber, strongSelf.controllerNode.syncContacts)
-                        }
-                    }
-                    (self.navigationController as? NavigationController)?.presentOverlay(controller: confirmationController, inGlobal: true, blockInteraction: true)
-                    self.confirmationController = confirmationController
+                    self.loginWithNumber?(self.controllerNode.currentNumber, self.controllerNode.syncContacts)
+//                    let (code, formattedNumber) = self.controllerNode.formattedCodeAndNumber
+//
+//                    let confirmationController = PhoneConfirmationController(theme: self.presentationData.theme, strings: self.presentationData.strings, code: code, number: formattedNumber, sourceController: self)
+//                    confirmationController.proceed = { [weak self] in
+//                        if let strongSelf = self {
+//                            strongSelf.loginWithNumber?(strongSelf.controllerNode.currentNumber, strongSelf.controllerNode.syncContacts)
+//                        }
+//                    }
+//                    (self.navigationController as? NavigationController)?.presentOverlay(controller: confirmationController, inGlobal: true, blockInteraction: true)
+//                    self.confirmationController = confirmationController
                 } else {
                     var actions: [TextAlertAction] = []
                     actions.append(TextAlertAction(type: .genericAction, title: self.presentationData.strings.Login_Edit, action: {}))
