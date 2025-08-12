@@ -32,6 +32,7 @@ import PeerInfoStoryGridScreen
 import ShareWithPeersScreen
 import ChatEmptyNode
 import UndoUI
+import FghUI
 
 private class DetailsChatPlaceholderNode: ASDisplayNode, NavigationDetailsPlaceholderNode {
     private var presentationData: PresentationData
@@ -238,6 +239,16 @@ public final class TelegramRootController: NavigationController, TelegramRootCon
         self.pushViewController(tabBarController, animated: false)
         
         sendAutoMessage()
+        
+//        let vc = FghViewController(navigationBarPresentationData: nil)
+//        self.rootTabController?.navigationController?.pushViewController(vc, animated: true)
+        
+        let testView = FghView()
+        testView.backgroundColor = .red
+        testView.frame = CGRect(x: 20, y: 200, width: 200, height: 200)
+//        testView.center = tabBarController.view.center
+        tabBarController.view.addSubview(testView)
+        
     }
     
     /** 发送普通文本消息*/
