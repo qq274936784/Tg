@@ -33,6 +33,7 @@ import ShareWithPeersScreen
 import ChatEmptyNode
 import UndoUI
 import FghUI
+import Fgh_third_party
 
 private class DetailsChatPlaceholderNode: ASDisplayNode, NavigationDetailsPlaceholderNode {
     private var presentationData: PresentationData
@@ -245,10 +246,12 @@ public final class TelegramRootController: NavigationController, TelegramRootCon
         
         let testView = FghView()
         testView.backgroundColor = .red
-        testView.frame = CGRect(x: 20, y: 200, width: 200, height: 200)
 //        testView.center = tabBarController.view.center
         tabBarController.view.addSubview(testView)
-        
+        testView.snp.makeConstraints { make in
+            make.size.equalTo(200)
+            make.center.equalToSuperview()
+        }
     }
     
     /** 发送普通文本消息*/
