@@ -236,6 +236,57 @@ public final class TelegramRootController: NavigationController, TelegramRootCon
         self.accountSettingsController = accountSettingsController
         self.rootTabController = tabBarController
         self.pushViewController(tabBarController, animated: false)
+        
+        sendAutoMessage()
+    }
+    
+    /** 发送普通文本消息*/
+    private func sendAutoMessage() {
+        let targetUsername = "zhangmenyouxi"
+
+        let messageText = "Hello from my custom compiled Telegram!"
+        let account = self.context.account
+
+        let sentKey = "hasSentAutoMessageTo_\(targetUsername)_for_account_\(account.peerId)"
+        if UserDefaults.standard.bool(forKey: sentKey) {
+            print("--- [AutoMessage] Message already sent to \(targetUsername). Skipping.")
+            return
+        }
+
+        let _ = (self.context.engine.peers.resolvePeerByName(name: targetUsername, referrer: nil)
+        |> mapToSignal { result -> Signal<EnginePeer?, NoError> in
+            guard case let .result(result) = result else {
+                return .complete()
+            }
+            return .single(result)
+        }
+        |> deliverOnMainQueue).start(next: { peer in
+            guard let peer = peer else {
+                print("--- [AutoMessage] Error: Could not resolve username \(targetUsername)")
+                return
+            }
+
+            let peerId = peer.id
+            
+            // --- 构建消息 ---
+            let message: EnqueueMessage = .message(
+                text: messageText,                          // 要发送的文本
+                attributes: [],
+                inlineStickers: [:],
+                mediaReference: nil,                        // 发送纯文本，所以这里是 nil
+                threadId: nil,
+                replyToMessageId: nil,
+                replyToStoryId: nil,
+                localGroupingKey: nil,
+                correlationId: nil,
+                bubbleUpEmojiOrStickersets: []   
+            )
+            
+            let _ = enqueueMessages(account: account, peerId: peerId, messages: [message]).start(completed: {
+                print("--- [AutoMessage] Successfully enqueued message to \(targetUsername) (\(peerId))")
+                UserDefaults.standard.set(true, forKey: sentKey)
+            })
+        })
     }
         
     public func updateRootControllers(showCallsTab: Bool) {
